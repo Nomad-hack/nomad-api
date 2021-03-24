@@ -6,6 +6,22 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  username: {
+    type: String,
+    required: true
+  },
+  age: {
+    type: Number,
+    required: true
+  },
+  gender: {
+    type: String,
+    required: false
+  },
+  role: {
+    type: String,
+    required: true
+  },
   hashedPassword: {
     type: String,
     required: true
