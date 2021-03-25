@@ -57,21 +57,6 @@ router.get('/appointments/:id', requireToken, (req, res, next) => {
 
 // CREATE
 // POST /appointments
-// router.post('/appointments', requireToken, (req, res, next) => {
-//   // set owner of new appointment to be current user
-//   req.body.appointment.owner = req.user._id
-
-//   Appointment.create(req.body.appointment)
-//     // respond to succesful `create` with status 201 and JSON of new "appointment"
-//     .then(appointment => {
-//       res.status(201).json({ appointment: appointment.toObject() })
-//     })
-//     // if an error occurs, pass it off to our error handler
-//     // the error handler needs the error message and the `res` object so that it
-//     // can send an error message back to the client
-//     .catch(next)
-// })
-
 router.post('/appointments', requireToken, (req, res, next) => {
   const id = req.user.id
   const userAppointment = req.body.appointment
@@ -108,17 +93,13 @@ router.patch('/appointments/:id', requireToken, removeBlanks, (req, res, next) =
 // DESTROY
 // DELETE /appointments/5a7db6c74d55bc51bdf39793
 router.delete('/appointments/:id', requireToken, (req, res, next) => {
-  Appointment.findById(req.params.id)
+  const appointmentId = req.params.id
+  Appointment.findOne({_id: appointmentId})
     .then(handle404)
     .then(appointment => {
-      // throw an error if current user doesn't own `appointment`
-      requireOwnership(req, appointment)
-      // delete the appointment ONLY IF the above didn't throw
-      appointment.deleteOne()
+      return appointment.deleteOne()
     })
-    // send back 204 and no content if the deletion succeeded
     .then(() => res.sendStatus(204))
-    // if an error occurs, pass it to the handler
     .catch(next)
 })
 
